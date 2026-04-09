@@ -1,0 +1,22 @@
+{
+    "name": "GateHub — Engineering Vault",
+    "short_name": "GateHub",
+    "description": "Free engineering notes and resources for students",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#4338ca",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "favicon.ico",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "favicon.ico",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

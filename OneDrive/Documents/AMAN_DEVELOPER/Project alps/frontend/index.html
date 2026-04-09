@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GateHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4338ca">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="GateHub">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js');
+        }
+    </script>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+            <div id="nav-logo" class="flex items-center space-x-3 cursor-pointer group" onclick="router.navigate('home')">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+                    <img src="favicon.ico" class="w-8 h-8" alt="GateHub Logo">
+                </div>
+                <span class="text-xl font-black tracking-tighter text-slate-900">GATE<span class="text-indigo-600">HUB</span></span>
+            </div>
+
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+                    <input type="text" oninput="app.searchSubjects(this.value)" placeholder="Search engineering hubs..."
+                           class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500/20 font-medium transition-all">
+                </div>
+            </div>
+
+            <div id="nav-actions" class="flex items-center space-x-2 md:space-x-4">
+                <button onclick="router.navigate('offline')" class="w-10 h-10 md:w-11 md:h-11 bg-white border border-slate-200 text-slate-600 rounded-xl md:rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all relative">
+                    <i data-lucide="package" class="w-5 h-5"></i>
+                </button>
+                <button onclick="ui.toggleMobileSearch(true)" class="md:hidden w-10 h-10 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </button>
+                <div id="auth-nav"></div>
+            </div>
+        </div>
+
+        <!-- Mobile Search Overlay -->
+        <div id="mobile-search-overlay" class="hidden fixed inset-0 bg-white z-[60] flex flex-col p-4">
+            <div class="flex items-center space-x-4 mb-8">
+                <button onclick="ui.toggleMobileSearch(false)" class="p-2 text-slate-400">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </button>
+                <input id="mobile-search-input" type="text" oninput="app.searchSubjects(this.value)" placeholder="Find a hub..."
+                       class="flex-1 text-lg font-bold border-none focus:ring-0">
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-8 py-8">
+
+        <!-- Home View -->
+        <section id="view-home" class="view-section active">
+            <div class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-none mb-4">
+                    The Central <span class="text-indigo-600">Hub</span> <br>For Engineering.
+                </h1>
+                <p class="text-slate-500 font-medium max-w-lg">Streamlining resource access for the next generation of engineers. Verified materials, organized by stream.</p>
+            </div>
+
+            <div class="flex items-center space-x-3 overflow-x-auto pb-6 no-scrollbar">
+                <button class="branch-chip active px-6 py-3 rounded-2xl bg-white border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm" onclick="app.setBranch('All')">All Streams</button>
+                <button class="branch-chip px-6 py-3 rounded-2xl bg-white border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm" onclick="app.setBranch('CS & IT')">CS & IT</button>
+                <button class="branch-chip px-6 py-3 rounded-2xl bg-white border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm" onclick="app.setBranch('Electrical')">Electrical</button>
+                <button class="branch-chip px-6 py-3 rounded-2xl bg-white border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm" onclick="app.setBranch('Electronics')">Electronics</button>
+                <button class="branch-chip px-6 py-3 rounded-2xl bg-white border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm" onclick="app.setBranch('Mechanical')">Mechanical</button>
+                <button class="branch-chip px-6 py-3 rounded-2xl bg-white border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm" onclick="app.setBranch('Civil')">Civil</button>
+                <button class="branch-chip px-6 py-3 rounded-2xl bg-white border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm" onclick="app.setBranch('Basic Science')">Basic Science</button>
+            </div>
+
+            <div id="admin-actions" class="hidden flex items-center justify-between p-6 bg-indigo-900 rounded-[2rem] mb-12 text-white">
+                <div>
+                    <h4 class="font-black text-lg">Admin Control Panel</h4>
+                    <p class="text-indigo-300 text-xs font-medium">Create and manage subject hubs</p>
+                </div>
+                <button onclick="ui.showModal('modal-create-subject')" class="bg-white text-indigo-900 px-6 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-transform">
+                    Create Subject
+                </button>
+            </div>
+
+            <div id="subjects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"></div>
+        </section>
+
+        <!-- Files View -->
+        <section id="view-files" class="view-section">
+            <button onclick="router.navigate('home')" class="mb-8 group flex items-center text-slate-400 font-bold uppercase tracking-widest text-[10px] hover:text-indigo-600 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3 group-hover:bg-indigo-50 transition-colors">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </div>
+                Back to Hubs
+            </button>
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                    <span id="file-branch-tag" class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500 mb-2 block">Loading...</span>
+                    <h2 id="current-subject-title" class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-2">Subject Hub</h2>
+                    <p id="current-subject-desc" class="text-slate-500 font-medium max-w-2xl"></p>
+                </div>
+                <div id="admin-file-actions" class="hidden">
+                    <button onclick="ui.showModal('modal-upload-file')" class="px-8 py-3.5 brand-gradient text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl">
+                        Add New Asset
+                    </button>
+                </div>
+            </div>
+            <div id="files-list" class="space-y-4"></div>
+        </section>
+
+        <!-- Offline Vault View -->
+        <section id="view-offline" class="view-section">
+            <button onclick="router.navigate('home')" class="mb-8 group flex items-center text-slate-400 font-bold uppercase tracking-widest text-[10px] hover:text-indigo-600 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3 group-hover:bg-indigo-50 transition-colors">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </div>
+                Return Home
+            </button>
+            <div class="flex items-center justify-between mb-12">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-900 tracking-tight">Your Offline <span class="text-indigo-600">Vault</span></h2>
+                    <p class="text-slate-500 font-medium mt-1">Resources synced for local access.</p>
+                </div>
+                <button onclick="app.clearVault()" class="px-5 py-2.5 bg-rose-50 text-rose-500 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-rose-500 hover:text-white transition-all">
+                    Clear Vault
+                </button>
+            </div>
+            <div id="offline-files-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- Auth View -->
+        <section id="view-auth" class="view-section">
+            <button onclick="router.navigate('home')" class="mb-8 group flex items-center text-slate-400 font-bold uppercase tracking-widest text-[10px] hover:text-indigo-600 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3 group-hover:bg-indigo-50 transition-colors">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </div>
+                Back
+            </button>
+            <div class="max-w-md mx-auto py-6">
+                <div class="bg-white p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-xl text-center">
+                    <div class="w-20 h-20 bg-indigo-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
+                        <i id="auth-main-icon" data-lucide="user" class="w-10 h-10 text-indigo-600"></i>
+                    </div>
+                    <div class="flex p-1.5 bg-slate-50 rounded-2xl mb-8">
+                        <button id="tab-student" onclick="app.setAuthMode('student')" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active bg-white shadow-sm">Student</button>
+                        <button id="tab-admin"   onclick="app.setAuthMode('admin')"   class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-400">Administrator</button>
+                    </div>
+                    <h2 id="auth-title"    class="text-2xl font-black text-slate-900 tracking-tight mb-2">Welcome Student</h2>
+                    <p  id="auth-subtitle" class="text-slate-400 font-medium text-sm mb-8">Access your digital repository</p>
+                    <div id="auth-error" class="hidden mb-6 px-4 py-3 bg-rose-50 border border-rose-100 text-rose-500 text-xs font-bold rounded-2xl text-left"></div>
+                    <form id="auth-form" class="space-y-4">
+                        <div id="name-field" class="hidden text-left">
+                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Display Name</label>
+                            <input id="auth-name" type="text" placeholder="John Doe"
+                                   class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all">
+                        </div>
+                        <div class="text-left">
+                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Access Email</label>
+                            <input type="email" required placeholder="name@college.edu"
+                                   class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all">
+                        </div>
+                        <div class="text-left">
+                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Password</label>
+                            <input type="password" required placeholder="••••••••"
+                                   class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-500/10 transition-all">
+                        </div>
+                        <button type="submit" class="w-full py-5 brand-gradient text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-indigo-200 mt-6 hover:scale-[1.02] transition-transform active:scale-95">
+                            Authorize Access
+                        </button>
+                    </form>
+                    <button id="auth-toggle" class="mt-8 text-[10px] font-black uppercase tracking-widest text-indigo-500 hover:text-indigo-700 transition-colors">
+                        Need an account? Sign up
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="ui.hideModal()"></div>
+
+        <!-- Create Subject Modal -->
+        <div id="modal-create-subject" class="hidden relative bg-white w-full max-w-lg rounded-[2.5rem] p-10 shadow-2xl">
+            <h3 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">New Subject Hub</h3>
+            <p class="text-slate-400 text-sm font-medium mb-8">Establish a new central repository.</p>
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2 mb-2 block">Hub Name</label>
+                    <input id="new-subj-name" type="text" placeholder="e.g. Applied Mathematics"
+                           class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold">
+                </div>
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2 mb-2 block">Target Stream</label>
+                    <select id="new-subj-branch" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold appearance-none">
+                        <option>Electrical</option>
+                        <option>Electronics</option>
+                        <option>CS & IT</option>
+                        <option>Mechanical</option>
+                        <option>Civil</option>
+                        <option>Basic Science</option>
+                    </select>
+                </div>
+                <button onclick="app.createSubject()" class="w-full py-5 brand-gradient text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl mt-4">
+                    Initialize Hub
+                </button>
+            </div>
+        </div>
+
+        <!-- Upload File Modal -->
+        <div id="modal-upload-file" class="hidden relative bg-white w-full max-w-lg rounded-[2.5rem] p-10 shadow-2xl">
+            <!-- Tabs -->
+            <div class="flex p-1 bg-slate-50 rounded-2xl mb-8">
+                <button id="tab-upload" onclick="app.switchUploadTab('upload')"
+                        class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all bg-white shadow-sm text-indigo-600">
+                    Upload File
+                </button>
+                <button id="tab-link" onclick="app.switchUploadTab('link')"
+                        class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-400">
+                    Add Link
+                </button>
+            </div>
+
+            <!-- Upload File Panel -->
+            <div id="panel-upload">
+                <h3 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">Upload Asset</h3>
+                <p class="text-slate-400 text-sm font-medium mb-6">Securely add resources to the vault. Max 50 MB.</p>
+                <div class="space-y-6">
+                    <div class="border-2 border-dashed border-slate-100 rounded-[2rem] p-12 text-center hover:bg-slate-50 transition-colors cursor-pointer relative group">
+                        <input type="file" accept=".pdf,.doc,.docx,.ppt,.pptx" onchange="app.handleFileSelection(event)" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <i data-lucide="upload-cloud" class="w-10 h-10 text-slate-200 mx-auto mb-4 group-hover:text-indigo-400 transition-colors"></i>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select PDF or Document</p>
+                        <p id="file-info" class="hidden mt-4 text-xs font-bold text-indigo-600"></p>
+                    </div>
+                    <button onclick="app.uploadFile()" class="w-full py-5 brand-gradient text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl">
+                        Sync to Cloud
+                    </button>
+                </div>
+            </div>
+
+            <!-- Add Link Panel -->
+            <div id="panel-link" class="hidden">
+                <h3 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">Add Link</h3>
+                <p class="text-slate-400 text-sm font-medium mb-6">Paste a Google Drive or any public PDF link.</p>
+                <div class="p-4 bg-amber-50 border border-amber-100 rounded-2xl mb-6">
+                    <p class="text-[10px] font-black text-amber-700 uppercase tracking-widest mb-1">How to get Google Drive link</p>
+                    <p class="text-xs text-amber-600">Upload PDF to Drive → Right click → Share → Anyone with link → Copy link</p>
+                </div>
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 block">File Name</label>
+                        <input type="text" id="link-name" placeholder="e.g. Electrical Machines Notes.pdf"
+                               class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 block">Google Drive / Any URL</label>
+                        <input type="url" id="link-url" placeholder="https://drive.google.com/file/d/..."
+                               class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 block">File Size (optional)</label>
+                        <input type="text" id="link-size" placeholder="e.g. 45 MB"
+                               class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm">
+                    </div>
+                    <button onclick="app.saveLink()" class="w-full py-5 brand-gradient text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl">
+                        Save Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+body {
+  background: #87CEEB;
+  background-image: url('/assests/ui/pika.jpg');
+  background-size: cover; background-repeat: no-repeat;
+  background-position: center; background-attachment: fixed;
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+}
+
+p {
+  font-size: 10px; font-family: 'Courier New', monospace;
+  color: #aaa; margin-top: 12px;
+}
+
+/* ═══════════════════════════════════════════
+   START SCREEN
+═══════════════════════════════════════════ */
+#startScreen {
+  position: absolute; text-align: center; color: #fff;
+  background: rgba(10, 18, 40, 0.93);
+  padding: 44px 64px;
+  border: 3px solid #ffcb05;
+  box-shadow: 0 0 40px rgba(255, 203, 5, 0.25), 0 8px 32px rgba(0,0,0,0.6);
+  border-radius: 16px; z-index: 2;
+}
+#startScreen h1 {
+  font-size: 3rem; font-weight: 800;
+  text-shadow: 3px 3px 0 #1a4a8a;
+  margin-bottom: 8px; letter-spacing: 1px;
+}
+#startScreen .hint {
+  font-size: 12px; color: rgba(255, 203, 5, 0.7);
+  margin-bottom: 22px; letter-spacing: 0.5px;
+}
+
+/* ═══════════════════════════════════════════
+   BUTTON BASE
+═══════════════════════════════════════════ */
+button {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  transition: transform 0.07s, filter 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* ── PRIMARY ── */
+#runBtn, #restartBtn {
+  background: #ffcb05;
+  color: #1a3060;
+  padding: 15px 40px;
+  font-size: 18px;
+  border-radius: 10px;
+  border-bottom: 5px solid #b08c00;
+  border-right:  3px solid #b08c00;
+  box-shadow: 0 6px 20px rgba(255, 203, 5, 0.3);
+}
+#runBtn:hover, #restartBtn:hover { filter: brightness(1.07); }
+#runBtn:active, #restartBtn:active {
+  border-bottom-width: 2px; border-right-width: 1px;
+  transform: translateY(3px);
+}
+
+/* ── SECONDARY — Jump (desktop) ── */
+#jumpBtn {
+  background: #2a75bb;
+  color: #fff;
+  padding: 12px 22px;
+  font-size: 15px;
+  border-radius: 8px;
+  border-bottom: 4px solid #1a4f85;
+  border-right:  2px solid #1a4f85;
+  box-shadow: 0 4px 12px rgba(42, 117, 187, 0.35);
+}
+#jumpBtn:hover  { filter: brightness(1.1); }
+#jumpBtn:active {
+  border-bottom-width: 1px; border-right-width: 1px;
+  transform: translateY(3px);
+}
+
+/* ── GHOST — BGM / SFX ── */
+#muteBGMBtn, #muteSFXBtn {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+#muteBGMBtn:hover, #muteSFXBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* ═══════════════════════════════════════════
+   CANVAS
+═══════════════════════════════════════════ */
+#gameCanvas {
+  display: none;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  border: 3px solid #ffcb05;
+  background-color: #2a75bb;
+  outline: none;
+  width: 1000px; height: 500px;
+}
+
+/* ═══════════════════════════════════════════
+   RESTART BUTTON (position)
+═══════════════════════════════════════════ */
+#restartBtn {
+  position: absolute;
+  top: 62%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+/* ═══════════════════════════════════════════
+   HUD
+═══════════════════════════════════════════ */
+#livesDisplay {
+  display: none;
+  position: absolute;
+  top: 12px; left: 50%; transform: translateX(-50%);
+  font-size: 26px; letter-spacing: 6px;
+  z-index: 20; pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+#scoreDisplay {
+  display: none;
+  position: absolute;
+  top: 12px; left: 16px;
+  z-index: 20; pointer-events: none;
+  flex-direction: column; gap: 2px;
+}
+.hud-score, .hud-high {
+  font-size: 22px; font-weight: 700;
+  font-family: 'Comic Sans MS', cursive;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000,
+               1px -1px 0 #000, -1px  1px 0 #000;
+}
+.hud-high { font-size: 17px; opacity: 0.8; }
+
+/* ═══════════════════════════════════════════
+   ZAP BUTTON (desktop — right side)
+═══════════════════════════════════════════ */
+#zapBtn {
+  display: none;
+  position: absolute;
+  right: 20px;
+  bottom: 108px;
+  z-index: 50;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  padding: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  background: #ffcb05;
+  color: #1a2a00;
+  font-size: 28px; font-weight: 900;
+  line-height: 1;
+  border-bottom: 5px solid #a07800;
+  border-right:  3px solid #a07800;
+  outline: 4px solid rgba(255, 203, 5, 0.35);
+  outline-offset: 4px;
+  transition: transform 0.07s;
+  cursor: pointer;
+}
+#zapBtn .zap-label {
+  font-size: 12px; font-weight: 900;
+  letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'Poppins', sans-serif;
+}
+#zapBtn:hover  { filter: brightness(1.08); }
+#zapBtn:active {
+  border-bottom-width: 2px; border-right-width: 1px;
+  transform: scale(0.93);
+}
+@keyframes zapGlow {
+  from { outline-color: rgba(255, 203, 5, 0.2); }
+  to   { outline-color: rgba(255, 203, 5, 0.75); }
+}
+#zapBtn.zap-pulse {
+  animation: zapGlow 0.6s ease-in-out infinite alternate;
+}
+
+/* ═══════════════════════════════════════════
+   DESKTOP CONTROLS BAR
+═══════════════════════════════════════════ */
+#desktopControls {
+  display: flex;
+  position: absolute;
+  bottom: 36px; right: 20px;
+  z-index: 2; gap: 10px;
+  align-items: center;
+}
+
+/* ═══════════════════════════════════════════
+   MOBILE CONTROLS
+═══════════════════════════════════════════ */
+#mobileControls { display: none; }
+
+/* ── JUMP: bottom-RIGHT ── */
+#mobileJumpBtn {
+  display: none;
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 100;
+  width: 112px; height: 112px;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 16px; font-weight: 900;
+  color: #fff;
+  background: #2a75bb;
+  border-bottom: 5px solid #1a4f85;
+  border-right:  3px solid #1a4f85;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  justify-content: center; align-items: center;
+  transition: transform 0.07s;
+  letter-spacing: 2px;
+}
+#mobileJumpBtn:active {
+  transform: scale(0.9);
+  border-bottom-width: 2px;
+}
+
+/* ── ZAP: bottom-LEFT ── */
+#mobileZapBtn {
+  display: none;
+  position: fixed;
+  bottom: 18px;
+  left: 18px;
+  z-index: 100;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  padding: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  background: #ffcb05;
+  color: #1a2a00;
+  font-size: 26px; font-weight: 900;
+  border-bottom: 5px solid #a07800;
+  border-right:  3px solid #a07800;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  outline: 4px solid rgba(255,203,5,0.35);
+  outline-offset: 4px;
+  transition: transform 0.07s;
+}
+#mobileZapBtn .zap-label {
+  font-size: 11px; font-weight: 900;
+  letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'Poppins', sans-serif;
+}
+#mobileZapBtn:active {
+  transform: scale(0.9);
+  border-bottom-width: 2px;
+}
+#mobileZapBtn.zap-pulse {
+  animation: zapGlow 0.6s ease-in-out infinite alternate;
+}
+
+/* ── BGM / SFX: top-left ── */
+#mobileBGMBtn, #mobileSFXBtn {
+  display: none;
+  position: fixed;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  padding: 0; font-size: 20px;
+  z-index: 100;
+  justify-content: center; align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px);
+  transition: background 0.1s;
+}
+#mobileBGMBtn:active,
+#mobileSFXBtn:active { background: rgba(255,255,255,0.25); }
+#mobileBGMBtn { top: 14px; left: 14px; }
+#mobileSFXBtn { top: 14px; left: 76px; }
+
+/* ═══════════════════════════════════════════
+   MOBILE MEDIA QUERY  ≤768px
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #gameCanvas {
+    width: 98vw;
+    height: min(49vw, 90vh);
+    max-height: 90vh;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Desktop ZAP hidden on mobile */
+  #zapBtn { display: none !important; }
+
+  #desktopControls { display: none !important; }
+  #mobileControls  { display: block; }
+  #mobileJumpBtn, #mobileBGMBtn, #mobileSFXBtn, #mobileZapBtn { display: flex; }
+
+  /* Restart */
+  #restartBtn {
+    top: 80%;
+    padding: 13px 32px;
+    font-size: 17px;
+    box-shadow: 0 0 20px rgba(255,203,5,0.5);
+  }
+
+  /* HUD */
+  #livesDisplay { font-size: 20px; top: 8px; }
+  .hud-score    { font-size: 18px; }
+  .hud-high     { font-size: 14px; }
+}

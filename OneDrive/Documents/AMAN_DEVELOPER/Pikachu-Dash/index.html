@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pikachu Dash ⚡</title>
+  <link rel="stylesheet" href="/false/style.css">
+</head>
+<body>
+
+  <!-- ── Start Screen ─────────────────────────── -->
+  <div id="startScreen">
+    <h1>Pikachu Dash ⚡</h1>
+    <p class="hint">
+      ↑ / Space → Jump &nbsp;|&nbsp; → / Z → ZAP Fearow!
+    </p>
+    <button id="runBtn">Start Dash!</button>
+    <p>Developed by AMAN MEHTA</p>
+  </div>
+
+  <!-- ── HUD ──────────────────────────────────── -->
+  <div id="livesDisplay">❤️❤️❤️</div>
+  <div id="scoreDisplay">
+    <span class="hud-score">⭐ 0</span>
+    <span class="hud-high">🏆 0</span>
+  </div>
+
+  <!-- ── Canvas ───────────────────────────────── -->
+  <canvas id="gameCanvas" width="1000" height="500"></canvas>
+
+  <!-- ── Restart ──────────────────────────────── -->
+  <button id="restartBtn" style="display:none;">▶ Restart</button>
+
+  <!-- ── ZAP button (single, responsive) ─────── -->
+  <button id="zapBtn">⚡<br>ZAP!</button>
+
+  <!-- ── Desktop Controls ─────────────────────── -->
+  <div id="desktopControls" style="display:none;">
+    <button id="jumpBtn">↑ Jump</button>
+    <button id="muteBGMBtn">🎶 BGM</button>
+    <button id="muteSFXBtn">🔊 SFX</button>
+  </div>
+
+  <!-- ── Mobile Controls ──────────────────────── -->
+  <div id="mobileControls">
+    <button id="mobileBGMBtn">🎶</button>
+    <button id="mobileSFXBtn">🔊</button>
+    <button id="mobileJumpBtn">JUMP</button>
+  </div>
+
+  <script src="/false/game.js"></script>
+</body>
+</html>
